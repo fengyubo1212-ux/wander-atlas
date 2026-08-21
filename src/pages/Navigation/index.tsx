@@ -1,6 +1,8 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGeolocation } from '@/hooks/useGeolocation'
+import LocationSearch from '@/components/common/LocationSearch'
+import type { Location } from '@/types'
 import './Navigation.css'
 
 interface LocationInput {
@@ -15,9 +17,15 @@ export default function Navigation() {
   const [origin, setOrigin] = useState<LocationInput>({ name: '', latitude: null, longitude: null })
   const [destination, setDestination] = useState<LocationInput>({ name: '', latitude: null, longitude: null })
 
-  const handleUseLocation = useCallback(() => {
-    geo.locate()
-  }, [geo])
+  useEffect(() => {
+    if (geo.latitude && geo.longitude && !origin.latitude) {
+      setOrigin({
+        name: `${geo.latitude.toFixed(4)}, ${geo.longitude.toFixed(4)}`,
+        latitude: geo.latitude,
+        longitude: geo.longitude,
+      })
+    }
+  }, [geo.latitude, geo.longitude, origin.latitude])
 
   const handleSwap = useCallback(() => {
     setOrigin(destination)
@@ -42,13 +50,12 @@ export default function Navigation() {
     navigate(`/navigation/result?${params.toString()}`)
   }, [origin, destination, navigate])
 
-  // Auto-fill origin from geolocation
-  if (geo.latitude && geo.longitude && !origin.latitude) {
-    setOrigin({
-      name: `${geo.latitude.toFixed(4)}, ${geo.longitude.toFixed(4)}`,
-      latitude: geo.latitude,
-      longitude: geo.longitude,
-    })
+  const handleOriginSelect = (loc: Location) => {
+    setOrigin({ name: loc.name, latitude: loc.latitude, longitude: loc.longitude })
+  }
+
+  const handleDestSelect = (loc: Location) => {
+    setDestination({ name: loc.name, latitude: loc.latitude, longitude: loc.longitude })
   }
 
   const canStart = origin.name.trim() && destination.name.trim()
@@ -63,18 +70,17 @@ export default function Navigation() {
             <label className="nav-label">出发地</label>
             <button
               className="nav-location-btn"
-              onClick={handleUseLocation}
+              onClick={() => geo.locate()}
               disabled={geo.loading}
             >
               {geo.loading ? '定位中...' : '📍 使用我的当前位置'}
             </button>
             {geo.error && <p className="nav-error">{geo.error}</p>}
-            <input
-              type="text"
-              className="nav-input"
+            <LocationSearch
               placeholder="输入出发地点"
               value={origin.name}
-              onChange={(e) => setOrigin((s) => ({ ...s, name: e.target.value }))}
+              onChange={(v) => setOrigin((s) => ({ ...s, name: v }))}
+              onSelect={handleOriginSelect}
             />
           </div>
 
@@ -84,12 +90,11 @@ export default function Navigation() {
 
           <div className="nav-field">
             <label className="nav-label">目的地</label>
-            <input
-              type="text"
-              className="nav-input"
+            <LocationSearch
               placeholder="🔍 输入目的地"
               value={destination.name}
-              onChange={(e) => setDestination((s) => ({ ...s, name: e.target.value }))}
+              onChange={(v) => setDestination((s) => ({ ...s, name: v }))}
+              onSelect={handleDestSelect}
             />
           </div>
         </div>
