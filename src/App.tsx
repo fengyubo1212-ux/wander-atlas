@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import Navbar from './components/common/Navbar'
+import DemoBanner from './components/common/DemoBanner'
 
 const Home = lazy(() => import('./pages/Home'))
 const Navigation = lazy(() => import('./pages/Navigation'))
@@ -22,6 +23,7 @@ function Loading() {
 export default function App() {
   return (
     <div className="app">
+      <DemoBanner />
       <Navbar />
       <main className="main-content">
         <Suspense fallback={<Loading />}>

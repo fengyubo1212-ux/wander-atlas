@@ -1,7 +1,9 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import MapView from '@/components/map/MapView'
-import { getRoutingProvider } from '@/services/routing'
+import { getRoutingProvider, resetRoutingProvider } from '@/services/routing'
+import { DemoRoutingProvider } from '@/services/routing/DemoRoutingProvider'
+import { isDemoMode } from '@/utils/dataMode'
 import type { Route, TransportMode } from '@/types'
 import { formatDistance, formatDuration } from '@/utils/format'
 import './NavigationResult.css'
@@ -25,6 +27,7 @@ export default function NavigationResult() {
   const [routes, setRoutes] = useState<Route[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [usedFallback, setUsedFallback] = useState(false)
   const [selectedIdx, setSelectedIdx] = useState(0)
 
   const origin = useMemo(() => ({
@@ -39,34 +42,48 @@ export default function NavigationResult() {
     longitude: parseFloat(searchParams.get('dLng') || '101.7116'),
   }), [searchParams])
 
-  useEffect(() => {
-    let cancelled = false
-
-    async function fetchRoutes() {
-      setLoading(true)
-      setError(null)
-      try {
-        const provider = getRoutingProvider()
-        const result = await provider.getRoutes({
-          origin: { latitude: origin.latitude, longitude: origin.longitude },
-          destination: { latitude: destination.latitude, longitude: destination.longitude },
-          mode: 'driving',
-        })
-        if (!cancelled) {
-          setRoutes(result)
-          setLoading(false)
-        }
-      } catch {
-        if (!cancelled) {
-          setError('路线计算失败，请重试。')
-          setLoading(false)
-        }
+  const fetchRoutes = useCallback(async (useFallback: boolean) => {
+    setLoading(true)
+    setError(null)
+    try {
+      let provider
+      if (useFallback) {
+        provider = new DemoRoutingProvider()
+      } else {
+        provider = getRoutingProvider()
+      }
+      const result = await provider.getRoutes({
+        origin: { latitude: origin.latitude, longitude: origin.longitude },
+        destination: { latitude: destination.latitude, longitude: destination.longitude },
+        mode: 'driving',
+      })
+      setRoutes(result)
+      setUsedFallback(useFallback)
+      setLoading(false)
+    } catch {
+      setLoading(false)
+      if (!useFallback) {
+        setError('路线服务暂时不可用。')
+      } else {
+        setError('演示数据加载失败。')
       }
     }
-
-    fetchRoutes()
-    return () => { cancelled = true }
   }, [origin, destination])
+
+  useEffect(() => {
+    let cancelled = false
+    if (!cancelled) fetchRoutes(false)
+    return () => { cancelled = true }
+  }, [fetchRoutes])
+
+  const handleRetry = useCallback(() => {
+    resetRoutingProvider()
+    fetchRoutes(false)
+  }, [fetchRoutes])
+
+  const handleUseDemo = useCallback(() => {
+    fetchRoutes(true)
+  }, [fetchRoutes])
 
   const selectedRoute = routes[selectedIdx]
 
@@ -93,14 +110,19 @@ export default function NavigationResult() {
           </div>
         )}
 
-        {error && (
+        {error && !loading && (
           <div className="nav-result-status">
             <p className="nav-result-error">{error}</p>
-            <button className="nav-retry-btn" onClick={() => window.location.reload()}>重试</button>
+            <div className="nav-error-actions">
+              <button className="nav-retry-btn" onClick={handleRetry}>重试</button>
+              {!isDemoMode() && (
+                <button className="nav-demo-btn" onClick={handleUseDemo}>使用演示数据</button>
+              )}
+            </div>
           </div>
         )}
 
-        {!loading && !error && (
+        {!loading && !error && routes.length > 0 && (
           <>
             <div className="nav-mode-tabs">
               {routes.map((route, i) => (
@@ -138,10 +160,18 @@ export default function NavigationResult() {
               </div>
             )}
 
-            <div className="nav-demo-badge">
-              当前使用演示数据，不代表真实路线
-            </div>
+            {usedFallback && (
+              <div className="nav-demo-badge">
+                当前使用演示数据，不代表真实路线
+              </div>
+            )}
           </>
+        )}
+
+        {!loading && !error && routes.length === 0 && (
+          <div className="nav-result-status">
+            <p>未找到可用路线。</p>
+          </div>
         )}
       </div>
 

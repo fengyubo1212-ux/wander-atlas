@@ -47,6 +47,20 @@
   font-weight: 500;
 }
 
+.nav-demo-btn {
+  padding: 8px 20px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav-error-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .nav-mode-tabs {
   display: flex;
   flex-direction: column;
