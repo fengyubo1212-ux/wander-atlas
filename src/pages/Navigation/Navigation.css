@@ -115,6 +115,57 @@
   cursor: not-allowed;
 }
 
+.nav-recent {
+  margin-top: 20px;
+}
+
+.nav-recent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.nav-recent-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.nav-recent-clear {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.nav-recent-clear:hover {
+  color: var(--color-error);
+}
+
+.nav-recent-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.nav-recent-item {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  font-size: 12px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  transition: all 0.15s;
+}
+
+.nav-recent-item:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.recent-name {
+  font-weight: 500;
+}
+
 .nav-demo-hint {
   text-align: center;
   font-size: 12px;

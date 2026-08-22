@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { getPlacesProvider } from '@/services/places'
 import { generateTripPlan, estimateTripBudget } from '@/utils/travelPlanner'
+import { addFavorite, isFavorite } from '@/store/storage'
 import type { TripDay, TripItem, TravelStyle, TravelInterest } from '@/types'
 import './TravelResult.css'
 
@@ -173,6 +174,13 @@ function PlaceCard({
   onMoveUp: () => void
   onMoveDown: () => void
 }) {
+  const [fav, setFav] = useState(() => isFavorite(item.place.id))
+
+  const handleFavorite = useCallback(() => {
+    addFavorite(item.place)
+    setFav(true)
+  }, [item.place])
+
   return (
     <div className="place-card">
       <div className="place-card-header">
@@ -180,6 +188,7 @@ function PlaceCard({
         <div className="place-actions">
           <button className="place-action-btn" onClick={onMoveUp} disabled={itemIdx === 0} title="上移">↑</button>
           <button className="place-action-btn" onClick={onMoveDown} disabled={itemIdx === totalItems - 1} title="下移">↓</button>
+          <button className="place-action-btn" onClick={handleFavorite} title="收藏" style={{ color: fav ? '#dc2626' : undefined }}>{fav ? '❤' : '♡'}</button>
           <button className="place-action-btn remove" onClick={onRemove} title="删除">✕</button>
         </div>
       </div>

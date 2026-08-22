@@ -2,7 +2,9 @@ import { useState, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import LocationSearch from '@/components/common/LocationSearch'
+import { getRecentSearches, addRecentSearch, clearRecentSearches } from '@/store/storage'
 import type { Location } from '@/types'
+import type { RecentSearch } from '@/store/storage'
 import './Navigation.css'
 
 interface LocationInput {
@@ -16,6 +18,7 @@ export default function Navigation() {
   const geo = useGeolocation()
   const [origin, setOrigin] = useState<LocationInput>({ name: '', latitude: null, longitude: null })
   const [destination, setDestination] = useState<LocationInput>({ name: '', latitude: null, longitude: null })
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>(() => getRecentSearches())
 
   useEffect(() => {
     if (geo.latitude && geo.longitude && !origin.latitude) {
@@ -34,6 +37,15 @@ export default function Navigation() {
 
   const handleStart = useCallback(() => {
     if (!origin.name || !destination.name) return
+
+    if (destination.latitude && destination.longitude) {
+      addRecentSearch({
+        name: destination.name,
+        latitude: destination.latitude,
+        longitude: destination.longitude,
+      })
+      setRecentSearches(getRecentSearches())
+    }
 
     const params = new URLSearchParams()
     if (origin.latitude && origin.longitude) {
@@ -56,6 +68,15 @@ export default function Navigation() {
 
   const handleDestSelect = (loc: Location) => {
     setDestination({ name: loc.name, latitude: loc.latitude, longitude: loc.longitude })
+  }
+
+  const handleRecentClick = (item: RecentSearch) => {
+    setDestination({ name: item.name, latitude: item.latitude, longitude: item.longitude })
+  }
+
+  const handleClearRecent = () => {
+    clearRecentSearches()
+    setRecentSearches([])
   }
 
   const canStart = origin.name.trim() && destination.name.trim()
@@ -106,6 +127,26 @@ export default function Navigation() {
         >
           开始规划路线
         </button>
+
+        {recentSearches.length > 0 && (
+          <div className="nav-recent">
+            <div className="nav-recent-header">
+              <span className="nav-recent-title">最近搜索</span>
+              <button className="nav-recent-clear" onClick={handleClearRecent}>清除</button>
+            </div>
+            <div className="nav-recent-list">
+              {recentSearches.map((item) => (
+                <button
+                  key={`${item.name}-${item.timestamp}`}
+                  className="nav-recent-item"
+                  onClick={() => handleRecentClick(item)}
+                >
+                  <span className="recent-name">{item.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <p className="nav-demo-hint">
           当前为演示模式，路线为模拟数据
