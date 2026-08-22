@@ -45,8 +45,12 @@ export default function TravelResult() {
     return () => { cancelled = true }
   }, [params])
 
-  const handleNavigateTo = useCallback((placeName: string) => {
-    navigate(`/navigation?dest=${encodeURIComponent(placeName)}`)
+  const handleNavigateTo = useCallback((placeName: string, lat: number, lng: number) => {
+    const params = new URLSearchParams()
+    params.set('dName', placeName)
+    params.set('dLat', String(lat))
+    params.set('dLng', String(lng))
+    navigate(`/navigation/result?${params.toString()}`)
   }, [navigate])
 
   const handleRemoveItem = useCallback((dayIdx: number, itemId: string) => {
@@ -130,7 +134,7 @@ export default function TravelResult() {
                     item={item}
                     itemIdx={itemIdx}
                     totalItems={day.items.length}
-                    onNavigate={() => handleNavigateTo(item.place.name)}
+                    onNavigate={() => handleNavigateTo(item.place.name, item.place.latitude, item.place.longitude)}
                     onRemove={() => handleRemoveItem(dayIdx, item.id)}
                     onMoveUp={() => handleMoveItem(dayIdx, itemIdx, -1)}
                     onMoveDown={() => handleMoveItem(dayIdx, itemIdx, 1)}

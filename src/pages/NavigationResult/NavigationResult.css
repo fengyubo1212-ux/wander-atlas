@@ -168,6 +168,53 @@
   color: var(--color-text-muted);
 }
 
+.nav-add-to-trip {
+  padding: 16px 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.nav-add-label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+}
+
+.nav-add-row {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-day-select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  background: var(--color-surface);
+  outline: none;
+}
+
+.nav-add-btn {
+  flex: 1;
+  padding: 8px 14px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.nav-add-btn:hover {
+  background: var(--color-primary-hover);
+}
+
+.nav-added-msg {
+  font-size: 13px;
+  color: var(--color-success);
+  font-weight: 500;
+  text-align: center;
+}
+
 .nav-demo-badge {
   margin: auto 20px 20px;
   padding: 10px 16px;

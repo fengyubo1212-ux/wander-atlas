@@ -4,7 +4,7 @@ import MapView from '@/components/map/MapView'
 import { getRoutingProvider, resetRoutingProvider } from '@/services/routing'
 import { DemoRoutingProvider } from '@/services/routing/DemoRoutingProvider'
 import { isDemoMode } from '@/utils/dataMode'
-import type { Route, TransportMode } from '@/types'
+import type { Route, TransportMode, TripItem } from '@/types'
 import { formatDistance, formatDuration } from '@/utils/format'
 import './NavigationResult.css'
 
@@ -29,6 +29,8 @@ export default function NavigationResult() {
   const [error, setError] = useState<string | null>(null)
   const [usedFallback, setUsedFallback] = useState(false)
   const [selectedIdx, setSelectedIdx] = useState(0)
+  const [addToTripDay, setAddToTripDay] = useState(1)
+  const [addedToTrip, setAddedToTrip] = useState(false)
 
   const origin = useMemo(() => ({
     name: searchParams.get('oName') || '起点',
@@ -41,6 +43,17 @@ export default function NavigationResult() {
     latitude: parseFloat(searchParams.get('dLat') || '3.1578'),
     longitude: parseFloat(searchParams.get('dLng') || '101.7116'),
   }), [searchParams])
+
+  const tripDays = useMemo(() => {
+    try {
+      const stored = localStorage.getItem('wander-current-trip')
+      if (stored) {
+        const trip = JSON.parse(stored)
+        return trip.days || 7
+      }
+    } catch { /* ignore */ }
+    return 7
+  }, [])
 
   const fetchRoutes = useCallback(async (useFallback: boolean) => {
     setLoading(true)
@@ -84,6 +97,32 @@ export default function NavigationResult() {
   const handleUseDemo = useCallback(() => {
     fetchRoutes(true)
   }, [fetchRoutes])
+
+  const handleAddToTrip = useCallback(() => {
+    const item: TripItem = {
+      id: `nav-${Date.now()}`,
+      place: {
+        id: `nav-place-${Date.now()}`,
+        name: destination.name,
+        address: destination.name,
+        latitude: destination.latitude,
+        longitude: destination.longitude,
+        type: 'other',
+        tags: [],
+      },
+      time: '14:00',
+      stayDuration: 1.5,
+      note: '从导航添加',
+    }
+
+    try {
+      const stored = localStorage.getItem('wander-trip-items')
+      const items: (TripItem & { day: number })[] = stored ? JSON.parse(stored) : []
+      items.push({ ...item, day: addToTripDay })
+      localStorage.setItem('wander-trip-items', JSON.stringify(items))
+      setAddedToTrip(true)
+    } catch { /* ignore */ }
+  }, [destination, addToTripDay])
 
   const selectedRoute = routes[selectedIdx]
 
@@ -159,6 +198,30 @@ export default function NavigationResult() {
                 </div>
               </div>
             )}
+
+            <div className="nav-add-to-trip">
+              {addedToTrip ? (
+                <p className="nav-added-msg">已加入行程</p>
+              ) : (
+                <>
+                  <p className="nav-add-label">把这个地点加入旅行计划？</p>
+                  <div className="nav-add-row">
+                    <select
+                      className="nav-day-select"
+                      value={addToTripDay}
+                      onChange={(e) => setAddToTripDay(Number(e.target.value))}
+                    >
+                      {Array.from({ length: tripDays }, (_, i) => (
+                        <option key={i + 1} value={i + 1}>Day {i + 1}</option>
+                      ))}
+                    </select>
+                    <button className="nav-add-btn" onClick={handleAddToTrip}>
+                      + 加入我的行程
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
 
             {usedFallback && (
               <div className="nav-demo-badge">
