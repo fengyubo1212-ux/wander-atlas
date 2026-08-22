@@ -1,5 +1,6 @@
 import type { Route, RouteStep, TransportMode } from '@/types'
 import type { RoutingProvider, RouteRequest } from './RoutingProvider'
+import { DemoRoutingProvider } from './DemoRoutingProvider'
 
 interface ORSDirectionsResponse {
   routes: {
@@ -49,6 +50,14 @@ export class OpenRouteServiceProvider implements RoutingProvider {
       } catch {
         // Silently fail individual modes
       }
+    }
+
+    // ORS 不支持公交/地铁，补充 demo 公交路线
+    if (!results.find((r) => r.mode === 'transit')) {
+      const demoProvider = new DemoRoutingProvider()
+      const demoRoutes = await demoProvider.getRoutes(request)
+      const transitRoute = demoRoutes.find((r) => r.mode === 'transit')
+      if (transitRoute) results.push(transitRoute)
     }
 
     return results

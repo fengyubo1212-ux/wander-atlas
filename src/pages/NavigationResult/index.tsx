@@ -19,7 +19,7 @@ const modeLabels: Record<TransportMode, string> = {
   walking: '步行',
   cycling: '骑行',
   driving: '驾车',
-  transit: '公交',
+  transit: '公交/地铁',
 }
 
 export default function NavigationResult() {

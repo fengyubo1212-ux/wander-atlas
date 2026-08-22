@@ -46,6 +46,10 @@ function generateDemoRoute(
   const distance = Math.round(totalDistance)
   const duration = Math.round(distance / speedMap[mode])
 
+  if (mode === 'transit') {
+    return generateTransitRoute(origin, destination, distance, duration, coordinates)
+  }
+
   const modeLabels: Record<TransportMode, string> = {
     walking: '步行',
     cycling: '骑行',
@@ -70,11 +74,42 @@ function generateDemoRoute(
   }
 }
 
+function generateTransitRoute(
+  _origin: { latitude: number; longitude: number },
+  _destination: { latitude: number; longitude: number },
+  distance: number,
+  _duration: number,
+  coordinates: [number, number][],
+): Route {
+  const walkDist = Math.round(distance * 0.15)
+  const transitDist = Math.round(distance * 0.7)
+  const walkDuration = Math.round(walkDist / 1.4)
+  const transitDuration = Math.round(transitDist / 8)
+  const waitTime = 300
+  const totalDuration = walkDuration * 2 + transitDuration + waitTime
+
+  return {
+    id: `demo-transit-${Date.now()}`,
+    mode: 'transit',
+    distance,
+    duration: totalDuration,
+    summary: '演示公交路线',
+    steps: [
+      { instruction: '步行至最近公交站', distance: walkDist, duration: walkDuration, mode: 'walking' },
+      { instruction: '等候公交车（约5分钟）', distance: 0, duration: waitTime, mode: 'transit' },
+      { instruction: `乘坐公交（${Math.round(transitDist / 1000 * 10) / 10} km）`, distance: transitDist, duration: transitDuration, mode: 'transit' },
+      { instruction: '在目的地下车', distance: 0, duration: 0, mode: 'transit' },
+      { instruction: '步行至目的地', distance: walkDist, duration: walkDuration, mode: 'walking' },
+    ],
+    coordinates,
+  }
+}
+
 export class DemoRoutingProvider implements RoutingProvider {
   async getRoutes(request: RouteRequest): Promise<Route[]> {
     await new Promise((r) => setTimeout(r, 500))
 
-    const modes: TransportMode[] = ['driving', 'walking', 'cycling']
+    const modes: TransportMode[] = ['driving', 'walking', 'cycling', 'transit']
     return modes.map((mode) =>
       generateDemoRoute(request.origin, request.destination, mode),
     )
