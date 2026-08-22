@@ -1,0 +1,82 @@
+.route-option-card {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-sans);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.route-option-card:hover {
+  border-color: var(--color-primary);
+}
+
+.route-option-card.selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.route-option-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.route-option-icon {
+  font-size: 14px;
+}
+
+.route-option-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.route-option-main {
+  margin-bottom: 6px;
+}
+
+.route-option-duration {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.route-option-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.route-option-detail {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.route-option-lines {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.line-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.line-arrow {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin: 0 2px;
+}

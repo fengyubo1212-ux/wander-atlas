@@ -26,6 +26,16 @@ export interface RouteStep {
   distance: number
   duration: number
   mode: TransportMode
+  lineId?: string
+  lineName?: string
+  lineColor?: string
+  direction?: string
+  boardingStation?: string
+  alightingStation?: string
+  stopCount?: number
+  stations?: string[]
+  departureTime?: string
+  arrivalTime?: string
 }
 
 export interface Route {
@@ -36,6 +46,11 @@ export interface Route {
   steps: RouteStep[]
   coordinates: [number, number][]
   summary?: string
+  strategy?: 'fastest' | 'fewest_transfers' | 'least_walking'
+  walkDuration?: number
+  transferCount?: number
+  fare?: number | null
+  lineSummary?: string
 }
 
 export interface Place {

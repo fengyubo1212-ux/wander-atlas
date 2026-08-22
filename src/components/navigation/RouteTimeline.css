@@ -1,0 +1,208 @@
+.route-timeline {
+  padding: 16px 0;
+}
+
+.timeline-header {
+  padding-bottom: 8px;
+}
+
+.timeline-origin,
+.timeline-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.origin-dot {
+  background: #22c55e;
+}
+
+.destination-dot {
+  background: #ef4444;
+}
+
+.timeline-location-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeline-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.timeline-name {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.timeline-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-step {
+  display: flex;
+  gap: 12px;
+  min-height: 60px;
+}
+
+.step-line-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 24px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.step-line {
+  width: 3px;
+  flex: 1;
+  min-height: 20px;
+}
+
+.step-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+  padding-bottom: 16px;
+}
+
+.step-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.step-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.step-action {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.step-meta {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.transfer-step {
+  background: #fef3c7;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+.transit-step {
+  margin-top: 4px;
+}
+
+.transit-line-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.transit-line-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.transit-direction {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.transit-stations {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 4px;
+}
+
+.transit-station {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.station-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.boarding-dot {
+  background: #22c55e;
+}
+
+.alighting-dot {
+  background: #ef4444;
+}
+
+.transit-stop-count {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  padding-left: 16px;
+  margin: 2px 0;
+}
+
+.destination-line {
+  background: #ef4444 !important;
+}
+
+.destination-icon {
+  background: #ef4444 !important;
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .timeline-step {
+    min-height: 50px;
+  }
+}
