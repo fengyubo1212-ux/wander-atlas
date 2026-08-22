@@ -1,208 +1,244 @@
 .route-timeline {
-  padding: 16px 0;
+  padding: 20px 0;
 }
 
-.timeline-header {
-  padding-bottom: 8px;
-}
-
-.timeline-origin,
-.timeline-footer {
+/* Station rows (origin/destination) */
+.tl-station {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 8px 0;
+  gap: 0;
 }
 
-.timeline-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  flex-shrink: 0;
-  margin-top: 3px;
-}
-
-.origin-dot {
-  background: #22c55e;
-}
-
-.destination-dot {
-  background: #ef4444;
-}
-
-.timeline-location-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.timeline-time {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.timeline-name {
-  font-size: 14px;
-  color: var(--color-text);
-}
-
-.timeline-steps {
-  display: flex;
-  flex-direction: column;
-}
-
-.timeline-step {
-  display: flex;
-  gap: 12px;
-  min-height: 60px;
-}
-
-.step-line-container {
+.tl-left {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 24px;
+  width: 20px;
   flex-shrink: 0;
   position: relative;
 }
 
-.step-line {
-  width: 3px;
-  flex: 1;
-  min-height: 20px;
-}
-
-.step-icon-wrapper {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.step-icon {
-  width: 24px;
-  height: 24px;
+.tl-dot {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
   flex-shrink: 0;
+  z-index: 2;
+  margin-top: 5px;
 }
 
-.step-content {
-  flex: 1;
-  padding-bottom: 16px;
-}
-
-.step-time {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text);
-  margin-bottom: 2px;
-}
-
-.step-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.step-action {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text);
-}
-
-.step-meta {
-  font-size: 12px;
-  color: var(--color-text-muted);
-}
-
-.transfer-step {
-  background: #fef3c7;
-  padding: 8px 12px;
-  border-radius: 6px;
-  margin: 4px 0;
-}
-
-.transit-step {
+.tl-dot-start {
+  background: #22c55e;
+  width: 12px;
+  height: 12px;
   margin-top: 4px;
 }
 
-.transit-line-info {
+.tl-dot-end {
+  background: #ef4444;
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
+}
+
+.tl-dot-walk {
+  background: #d1d5db;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+}
+
+.tl-dot-transfer {
+  background: #f59e0b;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+}
+
+.tl-dot-transit {
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+.tl-dot-default {
+  background: #9ca3af;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+}
+
+.tl-connector {
+  width: 2px;
+  flex: 1;
+  min-height: 16px;
+  background: #d1d5db;
+}
+
+.tl-connector-walk {
+  background: repeating-linear-gradient(
+    to bottom,
+    #d1d5db 0px,
+    #d1d5db 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.tl-connector-transfer {
+  background: repeating-linear-gradient(
+    to bottom,
+    #f59e0b 0px,
+    #f59e0b 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.tl-right {
+  flex: 1;
+  padding: 0 0 20px 12px;
+}
+
+.tl-time {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tl-station-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Step styles */
+.tl-step {
+  display: flex;
+  gap: 0;
+}
+
+.tl-step-text {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* Walk step */
+.tl-walk-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* Transfer step */
+.tl-transfer-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #92400e;
+}
+
+/* Transit step */
+.tl-transit-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tl-transit-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.transit-line-badge {
+.tl-line-badge {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #fff;
+  letter-spacing: 0.3px;
 }
 
-.transit-direction {
+.tl-direction {
   font-size: 12px;
   color: var(--color-text-muted);
 }
 
-.transit-stations {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-left: 4px;
+.tl-transit-body {
+  padding: 10px 12px;
 }
 
-.transit-station {
+.tl-station-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
-  color: var(--color-text);
+  padding: 3px 0;
 }
 
-.station-dot {
+.tl-station-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.boarding-dot {
+.tl-boarding {
   background: #22c55e;
 }
 
-.alighting-dot {
+.tl-alighting {
   background: #ef4444;
 }
 
-.transit-stop-count {
+.tl-station-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.tl-stop-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0 4px 16px;
   font-size: 12px;
   color: var(--color-text-muted);
-  padding-left: 16px;
-  margin: 2px 0;
 }
 
-.destination-line {
-  background: #ef4444 !important;
+.tl-stop-line {
+  width: 0;
+  height: 16px;
+  border-left: 2px dashed;
+  flex-shrink: 0;
 }
 
-.destination-icon {
-  background: #ef4444 !important;
-  color: #fff;
+/* Destination */
+.tl-destination .tl-right {
+  padding-bottom: 0;
 }
 
 @media (max-width: 640px) {
-  .timeline-step {
-    min-height: 50px;
+  .tl-right {
+    padding-bottom: 14px;
+  }
+
+  .tl-station-name {
+    font-size: 14px;
   }
 }

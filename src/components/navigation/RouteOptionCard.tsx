@@ -1,17 +1,12 @@
 import type { Route } from '@/types'
 import { formatDuration } from '@/utils/format'
+import { WalkIcon, ArrowUpDownIcon, ChevronRightIcon } from '@/components/common/Icons'
 import './RouteOptionCard.css'
 
 interface RouteOptionCardProps {
   route: Route
   isSelected: boolean
   onClick: () => void
-}
-
-const strategyIcons: Record<string, string> = {
-  fastest: '⚡',
-  fewest_transfers: '🔄',
-  least_walking: '🚶',
 }
 
 const strategyLabels: Record<string, string> = {
@@ -28,47 +23,58 @@ export default function RouteOptionCard({ route, isSelected, onClick }: RouteOpt
       className={`route-option-card ${isSelected ? 'selected' : ''}`}
       onClick={onClick}
     >
-      <div className="route-option-header">
-        <span className="route-option-icon">{strategyIcons[strategy] ?? '📍'}</span>
-        <span className="route-option-label">{strategyLabels[strategy] ?? route.summary}</span>
+      <div className="roc-top">
+        <div className="roc-strategy">
+          {strategy === 'fastest' && <span className="roc-badge roc-badge-recommended">推荐</span>}
+          <span className="roc-strategy-label">{strategyLabels[strategy] ?? route.summary}</span>
+        </div>
+        <ChevronRightIcon size={16} color="#999" />
       </div>
 
-      <div className="route-option-main">
-        <span className="route-option-duration">{formatDuration(route.duration)}</span>
-      </div>
+      <div className="roc-duration">{formatDuration(route.duration)}</div>
 
-      <div className="route-option-details">
+      <div className="roc-meta">
         {route.walkDuration != null && route.walkDuration > 0 && (
-          <span className="route-option-detail">
-            🚶 {formatDuration(route.walkDuration)}
+          <span className="roc-meta-item">
+            <WalkIcon size={13} color="#888" />
+            {formatDuration(route.walkDuration)}
           </span>
         )}
-        {route.transferCount != null && route.transferCount > 0 && (
-          <span className="route-option-detail">
-            🔄 换乘 {route.transferCount} 次
-          </span>
-        )}
-        {route.fare != null && (
-          <span className="route-option-detail">
-            💰 ¥{route.fare}
+        {route.transferCount != null && (
+          <span className="roc-meta-item">
+            <ArrowUpDownIcon size={13} color="#888" />
+            换乘 {route.transferCount}
           </span>
         )}
       </div>
 
       {route.lineSummary && (
-        <div className="route-option-lines">
+        <div className="roc-lines">
           {route.lineSummary.split(' → ').map((line, i, arr) => (
-            <span key={i}>
-              <span className="line-badge" style={{ backgroundColor: getLineColor(line) }}>
+            <span key={i} className="roc-line-group">
+              <span className="roc-line-tag" style={{ backgroundColor: getLineColor(line) }}>
                 {line}
               </span>
-              {i < arr.length - 1 && <span className="line-arrow">→</span>}
+              {i < arr.length - 1 && <span className="roc-line-arrow">→</span>}
             </span>
           ))}
         </div>
       )}
+
+      <div className="roc-route-preview">
+        {getStationSummary(route)}
+      </div>
     </button>
   )
+}
+
+function getStationSummary(route: Route): string {
+  const transitSteps = route.steps.filter(s => s.mode === 'transit' && s.boardingStation)
+  if (transitSteps.length === 0) return ''
+  const first = transitSteps[0]?.boardingStation
+  const last = transitSteps[transitSteps.length - 1]?.alightingStation
+  if (first && last) return `${first} → ${last}`
+  return ''
 }
 
 function getLineColor(lineName: string): string {

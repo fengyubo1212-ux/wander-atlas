@@ -2,95 +2,134 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 56px);
+  background: var(--color-bg);
 }
 
-.nav-result-header-bar {
+/* Navigation Input Bar */
+.nr-nav-input {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 12px 20px;
+  gap: 12px;
+  padding: 10px 20px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  flex-shrink: 0;
 }
 
-.nav-route-title {
+.nr-nav-edit {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.nr-nav-edit:hover {
+  background: var(--color-primary-hover);
+}
+
+.nr-nav-points {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.nr-nav-point {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 15px;
-  font-weight: 600;
+  min-width: 0;
+}
+
+.nr-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nr-dot-origin {
+  background: #22c55e;
+}
+
+.nr-dot-dest {
+  background: #ef4444;
+}
+
+.nr-nav-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.route-from {
-  color: #22c55e;
+.nr-nav-swap {
+  flex-shrink: 0;
+  opacity: 0.5;
 }
 
-.route-arrow {
-  color: var(--color-text-muted);
-}
-
-.route-to {
-  color: #ef4444;
-}
-
-.nav-mode-tabs {
+/* Mode Bar */
+.nr-mode-bar {
   display: flex;
   gap: 4px;
-  flex: 1;
-  justify-content: center;
+  padding: 8px 20px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.nav-mode-tab {
+.nr-mode-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: 5px;
+  padding: 6px 14px;
   border: 1px solid var(--color-border);
-  border-radius: 20px;
+  border-radius: 6px;
   background: var(--color-surface);
   font-size: 13px;
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--color-text-secondary);
   transition: all 0.15s;
 }
 
-.nav-mode-tab:hover {
+.nr-mode-btn:hover {
   border-color: #ccc;
+  color: var(--color-text);
 }
 
-.nav-mode-tab.active {
+.nr-mode-btn.active {
   border-color: var(--color-primary);
   background: var(--color-primary);
   color: #fff;
 }
 
-.mode-icon {
-  font-size: 14px;
-}
-
-.mode-label {
-  font-size: 13px;
-}
-
-.nav-result-body {
-  display: flex;
+/* Body Grid */
+.nr-body {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(320px, 380px) minmax(400px, 1fr);
   flex: 1;
   overflow: hidden;
 }
 
-/* 左侧：路线方案 */
-.nav-result-options {
-  width: 280px;
-  min-width: 280px;
+/* Options Panel */
+.nr-options {
   border-right: 1px solid var(--color-border);
+  background: var(--color-surface);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
 
-.options-header {
+.nr-options-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 14px 16px;
   font-size: 13px;
   font-weight: 600;
@@ -98,40 +137,50 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
-.route-options-list {
+.nr-options-count {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text-muted);
+}
+
+.nr-options-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 12px;
 }
 
-/* 中间：路线详情 */
-.nav-result-timeline {
-  flex: 1;
-  min-width: 320px;
+/* Timeline Panel */
+.nr-timeline {
   overflow-y: auto;
   padding: 0 20px;
+  background: var(--color-surface);
 }
 
-/* 右侧：地图 */
-.nav-result-map-panel {
-  width: 400px;
-  min-width: 300px;
+/* Map Panel */
+.nr-map-panel {
   display: flex;
   flex-direction: column;
-  border-left: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
-.map-tab-bar {
+.nr-map-tabs {
   display: flex;
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
-.map-tab {
+.nr-map-tab {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   padding: 10px;
   font-size: 13px;
   font-weight: 500;
@@ -143,22 +192,22 @@
   transition: all 0.15s;
 }
 
-.map-tab:hover {
+.nr-map-tab:hover {
   color: var(--color-text);
 }
 
-.map-tab.active {
+.nr-map-tab.active {
   color: var(--color-primary);
   border-bottom-color: var(--color-primary);
 }
 
-.map-content {
+.nr-map-content {
   flex: 1;
   position: relative;
 }
 
-/* Loading & Error */
-.nav-result-status {
+/* Status */
+.nr-status {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -168,144 +217,173 @@
   color: var(--color-text-muted);
 }
 
-.nav-result-error {
+.nr-error {
   color: var(--color-error);
   font-size: 14px;
 }
 
-.nav-retry-btn {
-  padding: 8px 20px;
-  background: var(--color-primary);
-  color: #fff;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.nav-demo-btn {
-  padding: 8px 20px;
-  background: #fef3c7;
-  color: #92400e;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.nav-error-actions {
+.nr-error-actions {
   display: flex;
   gap: 8px;
 }
 
-/* 加入行程 */
-.nav-add-to-trip {
-  padding: 16px 0;
-  border-top: 1px solid var(--color-border);
-  margin-top: 16px;
+/* Buttons */
+.nr-btn {
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
 }
 
-.nav-add-label {
+.nr-btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.nr-btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.nr-btn-secondary {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Add Trip */
+.nr-add-trip {
+  padding: 16px 0;
+  border-top: 1px solid var(--color-border);
+  margin-top: 8px;
+}
+
+.nr-add-label {
   font-size: 13px;
   color: var(--color-text-muted);
   margin-bottom: 10px;
 }
 
-.nav-add-row {
+.nr-add-row {
   display: flex;
   gap: 8px;
 }
 
-.nav-day-select {
-  padding: 8px 12px;
+.nr-day-select {
+  padding: 7px 10px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   font-size: 13px;
   background: var(--color-surface);
   outline: none;
 }
 
-.nav-add-btn {
+.nr-add-btn {
   flex: 1;
-  padding: 8px 14px;
-  background: var(--color-primary);
-  color: #fff;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 500;
-  transition: background 0.15s;
 }
 
-.nav-add-btn:hover {
-  background: var(--color-primary-hover);
-}
-
-.nav-added-msg {
+.nr-added-msg {
   font-size: 13px;
   color: var(--color-success);
   font-weight: 500;
   text-align: center;
 }
 
-.nav-demo-badge {
+/* Demo Badge */
+.nr-demo-badge {
   position: fixed;
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 10px 20px;
-  background: #fef3c7;
+  padding: 8px 16px;
+  background: rgba(254, 243, 199, 0.95);
   color: #92400e;
-  border-radius: 20px;
-  font-size: 12px;
-  text-align: center;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
   z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+/* Mobile Tabs */
+.nr-mobile-tabs {
+  display: none;
 }
 
 /* Mobile */
 @media (max-width: 768px) {
-  .nav-result-header-bar {
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px 16px;
+  .nr-nav-input {
+    padding: 8px 16px;
   }
 
-  .nav-route-title {
-    font-size: 14px;
+  .nr-nav-name {
+    font-size: 13px;
   }
 
-  .nav-mode-tabs {
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  .nr-mode-bar {
+    padding: 6px 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .nav-mode-tab {
-    padding: 6px 12px;
+  .nr-mode-btn {
+    padding: 5px 10px;
     font-size: 12px;
+    white-space: nowrap;
   }
 
-  .nav-result-body {
-    flex-direction: column;
-  }
-
-  .nav-result-options {
-    width: 100%;
-    min-width: unset;
-    max-height: 200px;
-    border-right: none;
+  .nr-mobile-tabs {
+    display: flex;
     border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
   }
 
-  .nav-result-timeline {
-    min-width: unset;
-    max-height: 40vh;
-    padding: 0 16px;
+  .nr-mobile-tab {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
   }
 
-  .nav-result-map-panel {
-    width: 100%;
-    min-width: unset;
-    min-height: 300px;
-    border-left: none;
-    border-top: 1px solid var(--color-border);
+  .nr-mobile-tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  .nr-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  .nr-options,
+  .nr-timeline,
+  .nr-map-panel {
+    display: none;
+  }
+
+  .nr-options.mobile-visible,
+  .nr-timeline.mobile-visible,
+  .nr-map-panel.mobile-visible {
+    display: flex;
+    flex-direction: column;
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .nr-options.mobile-visible {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .nr-timeline.mobile-visible {
+    overflow-y: auto;
+  }
+
+  .nr-map-panel.mobile-visible {
+    min-height: 0;
   }
 }

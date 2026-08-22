@@ -2,70 +2,216 @@
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   background: #f8f9fa;
-  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
-.metro-map-svg {
+/* Top bar */
+.metro-top-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.metro-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.metro-search-input {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 13px;
+  outline: none;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+}
+
+.metro-search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.metro-line-filter {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.metro-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  transition: all 0.15s;
+}
+
+.metro-filter-btn:hover {
+  border-color: #ccc;
+}
+
+.metro-filter-btn.active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.filter-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* SVG wrapper */
+.metro-svg-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.metro-svg {
   width: 100%;
   height: 100%;
   user-select: none;
 }
 
-.metro-map-controls {
+/* Controls */
+.metro-controls {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   z-index: 10;
 }
 
-.metro-control-btn {
-  width: 32px;
-  height: 32px;
+.metro-ctrl {
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fff;
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  font-size: 16px;
   cursor: pointer;
-  color: var(--color-text);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  color: var(--color-text-secondary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: background 0.15s;
 }
 
-.metro-control-btn:hover {
+.metro-ctrl:hover {
   background: #f0f0f0;
 }
 
-.station-tooltip {
+/* Legend */
+.metro-legend {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.legend-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.legend-dim {
+  opacity: 0.3;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Tooltip */
+.metro-tooltip {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
   background: #fff;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 10;
-  min-width: 160px;
+  min-width: 140px;
+}
+
+.tooltip-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  border-radius: 4px;
+}
+
+.tooltip-close:hover {
+  background: #f0f0f0;
 }
 
 .tooltip-name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-text);
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
-.tooltip-name-en {
-  font-size: 12px;
+.tooltip-en {
+  font-size: 11px;
   color: var(--color-text-muted);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .tooltip-lines {
@@ -74,16 +220,17 @@
   margin-bottom: 4px;
 }
 
-.tooltip-line-badge {
+.tooltip-badge {
   display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
   font-weight: 600;
   color: #fff;
 }
 
-.tooltip-interchange {
-  font-size: 12px;
+.tooltip-transfer {
+  font-size: 11px;
   color: var(--color-text-muted);
+  margin-top: 2px;
 }

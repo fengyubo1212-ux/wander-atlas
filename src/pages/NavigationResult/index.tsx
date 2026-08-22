@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router-dom'
 import MapView from '@/components/map/MapView'
 import RouteOptionCard from '@/components/navigation/RouteOptionCard'
 import RouteTimeline from '@/components/navigation/RouteTimeline'
@@ -8,23 +8,17 @@ import { getRoutingProvider, resetRoutingProvider } from '@/services/routing'
 import { getTransitProvider } from '@/services/transit'
 import { DemoRoutingProvider } from '@/services/routing/DemoRoutingProvider'
 import { isDemoMode } from '@/utils/dataMode'
+import { MapPinIcon, NavigationIcon, ArrowUpDownIcon } from '@/components/common/Icons'
 import type { Route, TransportMode, TripItem } from '@/types'
 import { klTransitNetwork } from '@/data/transit/kualaLumpur'
 import './NavigationResult.css'
 
-const modeIcons: Record<TransportMode, string> = {
-  walking: '🚶',
-  cycling: '🚲',
-  driving: '🚗',
-  transit: '🚇',
-}
-
-const modeLabels: Record<TransportMode, string> = {
-  walking: '步行',
-  cycling: '骑行',
-  driving: '驾车',
-  transit: '公交/地铁',
-}
+const modeConfig: Array<{ mode: TransportMode; label: string; icon: React.ReactNode }> = [
+  { mode: 'transit', label: '公交/地铁', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><circle cx="8" cy="20" r="1"/><circle cx="16" cy="20" r="1"/></svg> },
+  { mode: 'driving', label: '驾车', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg> },
+  { mode: 'walking', label: '步行', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="5" r="2"/><path d="M10 22V18L7 15l3-5 4 2 2-2"/><path d="M15 11l2 4-3 1"/></svg> },
+  { mode: 'cycling', label: '骑行', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="5" cy="18" r="3"/><circle cx="19" cy="18" r="3"/><path d="M12 18V6l-4 8"/><path d="M12 18l4-8h3"/></svg> },
+]
 
 export default function NavigationResult() {
   const [searchParams] = useSearchParams()
@@ -37,6 +31,7 @@ export default function NavigationResult() {
   const [addToTripDay, setAddToTripDay] = useState(1)
   const [addedToTrip, setAddedToTrip] = useState(false)
   const [mapTab, setMapTab] = useState<'map' | 'metro'>('map')
+  const [mobileTab, setMobileTab] = useState<'routes' | 'map'>('routes')
 
   const origin = useMemo(() => ({
     name: searchParams.get('oName') || '起点',
@@ -134,7 +129,6 @@ export default function NavigationResult() {
       stayDuration: 1.5,
       note: '从导航添加',
     }
-
     try {
       const stored = localStorage.getItem('wander-trip-items')
       const items: (TripItem & { day: number })[] = stored ? JSON.parse(stored) : []
@@ -179,71 +173,112 @@ export default function NavigationResult() {
   }, [selectedRoute])
 
   return (
-    <div className="nav-result-page fade-in">
-      <div className="nav-result-header-bar">
-        <div className="nav-route-title">
-          <span className="route-from">{origin.name}</span>
-          <span className="route-arrow">→</span>
-          <span className="route-to">{destination.name}</span>
-        </div>
-
-        <div className="nav-mode-tabs">
-          {(Object.keys(modeIcons) as TransportMode[]).map(mode => (
-            <button
-              key={mode}
-              className={`nav-mode-tab ${activeMode === mode ? 'active' : ''}`}
-              onClick={() => handleModeChange(mode)}
-            >
-              <span className="mode-icon">{modeIcons[mode]}</span>
-              <span className="mode-label">{modeLabels[mode]}</span>
-            </button>
-          ))}
+    <div className="nav-result-page">
+      {/* Navigation Input Bar */}
+      <div className="nr-nav-input">
+        <Link to="/navigation" className="nr-nav-edit" title="修改起终点">
+          <NavigationIcon size={16} color="#fff" />
+        </Link>
+        <div className="nr-nav-points">
+          <div className="nr-nav-point">
+            <span className="nr-dot nr-dot-origin" />
+            <span className="nr-nav-name">{origin.name}</span>
+          </div>
+          <div className="nr-nav-swap">
+            <ArrowUpDownIcon size={14} color="#999" />
+          </div>
+          <div className="nr-nav-point">
+            <span className="nr-dot nr-dot-dest" />
+            <span className="nr-nav-name">{destination.name}</span>
+          </div>
         </div>
       </div>
 
-      <div className="nav-result-body">
-        <div className="nav-result-options">
-          <div className="options-header">路线方案</div>
+      {/* Mode Tabs */}
+      <div className="nr-mode-bar">
+        {modeConfig.map(({ mode, label, icon }) => (
+          <button
+            key={mode}
+            className={`nr-mode-btn ${activeMode === mode ? 'active' : ''}`}
+            onClick={() => handleModeChange(mode)}
+          >
+            {icon}
+            <span>{label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Mobile Tab Switcher */}
+      <div className="nr-mobile-tabs">
+        <button
+          className={`nr-mobile-tab ${mobileTab === 'routes' ? 'active' : ''}`}
+          onClick={() => setMobileTab('routes')}
+        >
+          路线
+        </button>
+        <button
+          className={`nr-mobile-tab ${mobileTab === 'map' ? 'active' : ''}`}
+          onClick={() => setMobileTab('map')}
+        >
+          地图
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div className="nr-body">
+        {/* Left: Route Options */}
+        <div className={`nr-options ${mobileTab === 'routes' ? 'mobile-visible' : ''}`}>
+          <div className="nr-options-header">
+            <span>路线方案</span>
+            {!loading && routes.length > 0 && (
+              <span className="nr-options-count">{routes.length} 个方案</span>
+            )}
+          </div>
+
           {loading && (
-            <div className="nav-result-status">
+            <div className="nr-status">
               <div className="loading-spinner" />
               <p>正在计算路线...</p>
             </div>
           )}
 
           {error && !loading && (
-            <div className="nav-result-status">
-              <p className="nav-result-error">{error}</p>
-              <div className="nav-error-actions">
-                <button className="nav-retry-btn" onClick={handleRetry}>重试</button>
+            <div className="nr-status">
+              <p className="nr-error">{error}</p>
+              <div className="nr-error-actions">
+                <button className="nr-btn nr-btn-primary" onClick={handleRetry}>重试</button>
                 {!isDemoMode() && (
-                  <button className="nav-demo-btn" onClick={handleUseDemo}>使用演示数据</button>
+                  <button className="nr-btn nr-btn-secondary" onClick={handleUseDemo}>使用演示数据</button>
                 )}
               </div>
             </div>
           )}
 
           {!loading && !error && routes.length > 0 && (
-            <div className="route-options-list">
+            <div className="nr-options-list">
               {routes.map((route, i) => (
                 <RouteOptionCard
                   key={route.id}
                   route={route}
                   isSelected={selectedIdx === i}
-                  onClick={() => setSelectedIdx(i)}
+                  onClick={() => {
+                    setSelectedIdx(i)
+                    setMobileTab('routes')
+                  }}
                 />
               ))}
             </div>
           )}
 
           {!loading && !error && routes.length === 0 && (
-            <div className="nav-result-status">
+            <div className="nr-status">
               <p>未找到可用路线。</p>
             </div>
           )}
         </div>
 
-        <div className="nav-result-timeline">
+        {/* Center: Timeline */}
+        <div className={`nr-timeline ${mobileTab === 'routes' ? 'mobile-visible' : ''}`}>
           {selectedRoute && (
             <RouteTimeline
               route={selectedRoute}
@@ -252,15 +287,15 @@ export default function NavigationResult() {
             />
           )}
 
-          <div className="nav-add-to-trip">
+          <div className="nr-add-trip">
             {addedToTrip ? (
-              <p className="nav-added-msg">已加入行程</p>
+              <p className="nr-added-msg">已加入行程</p>
             ) : (
               <>
-                <p className="nav-add-label">加入旅行计划？</p>
-                <div className="nav-add-row">
+                <p className="nr-add-label">加入旅行计划？</p>
+                <div className="nr-add-row">
                   <select
-                    className="nav-day-select"
+                    className="nr-day-select"
                     value={addToTripDay}
                     onChange={(e) => setAddToTripDay(Number(e.target.value))}
                   >
@@ -268,7 +303,7 @@ export default function NavigationResult() {
                       <option key={i + 1} value={i + 1}>Day {i + 1}</option>
                     ))}
                   </select>
-                  <button className="nav-add-btn" onClick={handleAddToTrip}>
+                  <button className="nr-btn nr-btn-primary nr-add-btn" onClick={handleAddToTrip}>
                     + 加入我的行程
                   </button>
                 </div>
@@ -277,23 +312,26 @@ export default function NavigationResult() {
           </div>
         </div>
 
-        <div className="nav-result-map-panel">
-          <div className="map-tab-bar">
+        {/* Right: Map / Metro */}
+        <div className={`nr-map-panel ${mobileTab === 'map' ? 'mobile-visible' : ''}`}>
+          <div className="nr-map-tabs">
             <button
-              className={`map-tab ${mapTab === 'map' ? 'active' : ''}`}
+              className={`nr-map-tab ${mapTab === 'map' ? 'active' : ''}`}
               onClick={() => setMapTab('map')}
             >
-              🗺️ 地图
+              <MapPinIcon size={14} />
+              地图
             </button>
             <button
-              className={`map-tab ${mapTab === 'metro' ? 'active' : ''}`}
+              className={`nr-map-tab ${mapTab === 'metro' ? 'active' : ''}`}
               onClick={() => setMapTab('metro')}
             >
-              🚇 地铁图
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><circle cx="8" cy="20" r="1"/><circle cx="16" cy="20" r="1"/></svg>
+              地铁图
             </button>
           </div>
 
-          <div className="map-content">
+          <div className="nr-map-content">
             {mapTab === 'map' ? (
               <MapView
                 center={[origin.latitude, origin.longitude]}
@@ -312,8 +350,8 @@ export default function NavigationResult() {
       </div>
 
       {usedFallback && (
-        <div className="nav-demo-badge">
-          当前使用演示数据，不代表真实路线
+        <div className="nr-demo-badge">
+          演示数据 · 票价仅供界面展示
         </div>
       )}
     </div>

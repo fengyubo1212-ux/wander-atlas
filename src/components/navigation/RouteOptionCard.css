@@ -3,80 +3,114 @@
   width: 100%;
   padding: 14px 16px;
   background: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
   cursor: pointer;
   text-align: left;
   font-family: var(--font-sans);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
 }
 
 .route-option-card:hover {
-  border-color: var(--color-primary);
+  border-color: #bbb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .route-option-card.selected {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary), 0 2px 8px rgba(37,99,235,0.1);
 }
 
-.route-option-header {
+.roc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.roc-strategy {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 6px;
 }
 
-.route-option-icon {
-  font-size: 14px;
-}
-
-.route-option-label {
-  font-size: 13px;
+.roc-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
-.route-option-main {
-  margin-bottom: 6px;
+.roc-badge-recommended {
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
-.route-option-duration {
-  font-size: 20px;
+.roc-strategy-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.roc-duration {
+  font-size: 22px;
   font-weight: 700;
   color: var(--color-text);
+  line-height: 1.2;
+  margin-bottom: 6px;
 }
 
-.route-option-details {
+.roc-meta {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 8px;
 }
 
-.route-option-detail {
+.roc-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
   color: var(--color-text-muted);
 }
 
-.route-option-lines {
+.roc-lines {
   display: flex;
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 
-.line-badge {
+.roc-line-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.roc-line-tag {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
   color: #fff;
+  letter-spacing: 0.3px;
 }
 
-.line-arrow {
+.roc-line-arrow {
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+.roc-route-preview {
   font-size: 11px;
   color: var(--color-text-muted);
-  margin: 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
